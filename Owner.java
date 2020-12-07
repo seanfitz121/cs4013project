@@ -13,8 +13,9 @@ public class Owner {
         properties.add(p);
         System.out.println(p + " Registered");
     }
-    public void viewProperty(){
+    public ArrayList<Property> viewProperty(){
         /* Return properties arraylist in readable format*/
+        return properties;
     }
     public void payTax(){
        /* Take payment, create propertyTax, store in property.(Implement in PropertyTax)*/
