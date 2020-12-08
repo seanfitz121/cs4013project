@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.Calendar;
 public class Property
 {
     /* Property info */
@@ -7,9 +9,8 @@ public class Property
     private String locationCategory;
     private boolean ppr;
     private int year;
+    private ArrayList<PropertyTax> taxHistory;
     /* Tax/Payment History */
-
-
     public Property(String address, String eircode, double marketValue, String locationCategory, boolean ppr, int year){
         this.address = address;
         this.eircode = eircode;
@@ -17,6 +18,18 @@ public class Property
         this.locationCategory = locationCategory;
         this.ppr = ppr;
         this.year = year;
+    }
+    public void createTaxHistory(){
+        taxHistory = new ArrayList<PropertyTax>();
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        for(int i = year; i <= currentYear; i++){
+            PropertyTax p = new PropertyTax(address, eircode, marketValue, locationCategory, ppr, year, i);
+            taxHistory.add(p);
+        }
+    }
+    public String toString(){
+        String string = "\nAddress: " + address + "\nEircode: " + eircode + "\nMarket Value: " + marketValue + "\nLocation Category: " + locationCategory + "\nPrincipal Private Residence: " + ppr + "\nYear of Registration: " + year;
+        return string;
     }
     public String getAddress(){
         return this.address;
@@ -53,5 +66,8 @@ public class Property
     }
     public void setYear(int year){
         this.year = year;
+    }
+    public ArrayList<PropertyTax> getTaxHistory(){
+        return this.taxHistory;
     }
 }
