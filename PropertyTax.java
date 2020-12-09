@@ -6,6 +6,9 @@ public class PropertyTax extends Property{
     private boolean paid;
     private int year;
     private int regYear;
+    private double upperBand = 650000;
+    private double middleBand = 400001;
+    private double lowerBand = 150000;
     public PropertyTax(String address, String eircode, double marketValue, String locationCategory, boolean ppr, int regYear, int year){
         super(address, eircode, marketValue, locationCategory, ppr, regYear);
         this.tax = getPropertyTax(year);
@@ -15,30 +18,45 @@ public class PropertyTax extends Property{
     }
     public double getPropertyTax(int year){
         double tax = 100;
-        if (super.getMarketValue() > 650000) {
-            tax = tax + (super.getMarketValue()*.04);
-        } else if (super.getMarketValue() > 400001) {
-            tax = tax + (super.getMarketValue()*.02);
-        } else if (super.getMarketValue()> 150000) {
-            tax = tax + (super.getMarketValue()*.01);
-        }
-        if (super.getLocationCategory().equals("City")) {
-            tax = tax + 100;
-        } else if (super.getLocationCategory().equals("Large town")) {
-            tax = tax + 80;
-        } else if (super.getLocationCategory().equals("Small town")) {
-            tax = tax + 60;
-        } else if (super.getLocationCategory().equals("Village")){
-            tax = tax + 50;
-        } else if (super.getLocationCategory().equals("Countryside")) {
-            tax = tax + 25;
-        }
-        if (!super.getPpr()){
-            tax = tax + 100;
+        double value = super.getMarketValue();
+        if (value > upperBand) {
+            tax = tax + (value*.04);
+        } else if (value > middleBand) {
+            tax = tax + (value*.02);
+        } else if (value > lowerBand) {
+            tax = tax + (value*.01);
         }
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
         for(int i = 0; i < currentYear-year; i++){
             tax = tax*1.07;
+        }
+        tax = tax + getLocationTax();
+        tax = tax + isPrivateResidence();
+        return tax;
+    }
+    public double getLocationTax(){
+        switch (super.getLocationCategory()) {
+            case "City":
+                tax = tax + 100;
+                break;
+            case "Large town":
+                tax = tax + 80;
+                break;
+            case "Small town":
+                tax = tax + 60;
+                break;
+            case "Village":
+                tax = tax + 50;
+                break;
+            case "Countryside":
+                tax = tax + 25;
+                break;
+        }
+        return tax;
+    }
+    public double isPrivateResidence(){
+        if (!super.getPpr()){
+            tax = tax + 100;
         }
         return tax;
     }
