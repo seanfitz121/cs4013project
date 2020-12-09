@@ -20,6 +20,7 @@ public class CLI {
      * Runs the cmd login interface
      */
     public void run() throws IOException {
+        ImportData data = new ImportData(m);
         boolean more = true;
         while (more) {
             System.out.println("Would you like to: 1)Register 2)Sign In E)xit");
