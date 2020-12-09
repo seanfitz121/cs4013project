@@ -114,4 +114,7 @@ public class Owner {
             }
         }    
     }
+    public String getName() {
+        return name;
+    }
 }
