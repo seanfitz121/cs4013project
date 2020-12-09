@@ -1,12 +1,17 @@
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Calendar;
 public class PropertyTax extends Property{
     private double tax;
     private boolean paid;
     private int year;
+    private int regYear;
     public PropertyTax(String address, String eircode, double marketValue, String locationCategory, boolean ppr, int regYear, int year){
         super(address, eircode, marketValue, locationCategory, ppr, regYear);
         this.tax = getPropertyTax(year);
+        this.paid = false;
         this.year = year;
+        this.regYear = regYear;
     }
     public double getPropertyTax(int year){
         double tax = 100;
@@ -37,16 +42,27 @@ public class PropertyTax extends Property{
         }
         return tax;
     }
+    public int getYear(){
+        return this.year;
+    }
     public double getTax(){
         return this.tax;
     }
-    public void setPaid(boolean paid){
-        this.paid = paid;
+    public void setPaid(){
+        this.paid = true;
+        try {
+            FileWriter csvWriter = new FileWriter("record.csv", true);
+            csvWriter.append(String.join("", super.getEircode(),","));
+            csvWriter.append(String.join("", Double.toString(tax),","));
+            csvWriter.append(String.join("", Integer.toString(regYear),","));
+            csvWriter.append(String.join("", Integer.toString(year),","));
+            csvWriter.append("\n");
+            csvWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     public boolean getPaid(){
         return this.paid;
-    }
-    public int getYear(){
-        return this.year;
     }
 }
