@@ -1,3 +1,5 @@
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 public class Property
@@ -22,7 +24,7 @@ public class Property
     public void createTaxHistory(){
         taxHistory = new ArrayList<PropertyTax>();
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-        for(int i = year; i <= currentYear; i++){
+        for(int i = year; i <= currentYear; i++) {
             PropertyTax p = new PropertyTax(address, eircode, marketValue, locationCategory, ppr, year, i);
             taxHistory.add(p);
         }
