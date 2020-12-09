@@ -22,7 +22,7 @@ public class CLI {
     public void run() throws IOException {
         boolean more = true;
         while (more) {
-            System.out.println("Would you like to: 1)Register 2)Sign In 3)Exit");
+            System.out.println("Would you like to: 1)Register 2)Sign In E)xit");
             String command = in.nextLine().toUpperCase();
             if(command.equals("1")){
                 System.out.println("Please enter your name: ");
@@ -44,7 +44,7 @@ public class CLI {
                 }
                 System.out.println("1)Register Property, 2)View Properties, 3)Pay Tax,");
                 System.out.println("4)View Paid Tax, 5)View Due Tax, 6)View Overdue Tax,");
-                System.out.println("7)View Balancing Statements");
+                System.out.println("7)View Balancing Statements, E)xit");
                 command = in.nextLine().toUpperCase();
                 if (command.equals("1")) {
                     System.out.println("Please enter Address: ");
@@ -92,8 +92,11 @@ public class CLI {
                     int temp = Integer.valueOf(in.nextLine());
                     System.out.println(m.getOwners().get(index).balancingStatement(temp));
                 }
+                if(command.equals("E")){
+                    more = false;
+                }
             }
-            if(command.equals("3")){
+            if(command.equals("E")){
                 more = false;
             }
         }
