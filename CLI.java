@@ -55,13 +55,7 @@ public class CLI {
                 if(command.equals("4")){
                     System.out.println("Please enter Owner name: ");
                     String name = in.nextLine();
-                    for(int i = 0; i < m.getOwners().size(); i++){
-                        if(m.getOwners().get(i).getName().equals(name)){
-                            System.out.println(m.getOwners().get(i).viewPaidTax());
-                            System.out.println(m.getOwners().get(i).viewDueTax());
-                            System.out.println(m.getOwners().get(i).viewOverdueTax());
-                        }
-                    }
+                    m.getPropertyTaxFromOwner(name);
                 }
                 if(command.equals("5")){
                     System.out.println("Please enter Owner name: ");
