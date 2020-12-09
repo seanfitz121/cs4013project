@@ -1,4 +1,3 @@
-import java.io.*;
 import java.util.ArrayList;
 
 public class Owner {
@@ -19,11 +18,13 @@ public class Owner {
         p.createTaxHistory();
         properties.add(p);
     }
-    public void viewProperties(){
+    public String viewProperties(){
         /* Prints properties array */
+        String s = "";
         for (int i = 0; i< properties.size(); i++){
-            System.out.println(properties.get(i).toString());
+            s = s + properties.get(i).toString();
         }
+        return s;
     }
     public void payTax(Property p, int year){
         /* Take payment, create propertyTax, store in property.(Implement in PropertyTax)*/
@@ -133,18 +134,20 @@ public class Owner {
         s = s + "\nUnpaid tax in this year: " + year + ", " + unpaid;
         return s;
     }
-    public void balancingStatement(Property p){
+    public String balancingStatement(Property p){
         /* Shows amount of tax paid for specific Property*/
         ArrayList<PropertyTax> history = p.getTaxHistory();
-        System.out.println("\nAll taxes for Property at " + p.getAddress());
+        String s = "";
+        s = "\nAll taxes for Property at " + p.getAddress();
         for (int y = 0; y < history.size(); y++){
             PropertyTax tax = history.get(y);
             if (tax.getPaid()){
-                System.out.println("\nYear: " + tax.getYear() + "\nTax Paid: " + tax.getTax());
+                s = s + "\nYear: " + tax.getYear() + "\nTax Paid: " + tax.getTax();
             } else {
-                System.out.println("\nYear: " + tax.getYear() + "\nTax Due: " + tax.getTax());
+                s = s + "\nYear: " + tax.getYear() + "\nTax Due: " + tax.getTax();
             }
         }
+        return s;
     }
     public String getName() {
         return name;
