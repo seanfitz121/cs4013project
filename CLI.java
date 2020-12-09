@@ -5,9 +5,9 @@ public class CLI {
     private Scanner in;
     Management m = new Management();
     boolean loggedIn;
-    boolean registered;
+    boolean managerLoggedIn;
     String currentUser;
-    int index = -1;
+    int index = 0;
 
     /**
      * Constructs CLI object
@@ -21,31 +21,105 @@ public class CLI {
      */
     public void run() throws IOException {
         ImportData data = new ImportData(m);
-        boolean more = true;
-        while (more) {
-            System.out.println("Would you like to: 1)Register 2)Sign In E)xit");
-            String command = in.nextLine().toUpperCase();
-            if(command.equals("1")){
-                System.out.println("Please enter your name: ");
-                command = in.nextLine();
-                m.registerOwner(command);
-            }
-            /* Owner Commands*/
-            if(command.equals("2")){
-                System.out.println("Please enter your name: ");
-                currentUser = in.nextLine();
-                for(int i = 0; i < m.getOwners().size(); i++){
-                    if(m.getOwners().get(i).getName().equals(currentUser)){
-                        index = i;
+        System.out.println("Are you a 1)Manager 2)Owner?");
+        String command = in.nextLine().toUpperCase();
+        if(command.equals("1")){
+            managerLoggedIn = true;
+            while(managerLoggedIn){
+                System.out.println("\n1)List Owners 2)List Properties");
+                System.out.println("3)Get Property Payment Data, 4)Get Owner Payment Data,");
+                System.out.println("5)List Overdue Tax, 6)Get Property Tax Statistics,");
+                System.out.println("7)Tweak rates or levies, E)xit");
+                command = in.nextLine().toUpperCase();
+                if(command.equals("1")){
+                    for(int i = 0; i < m.getOwners().size(); i++){
+                        System.out.println(m.getOwners().get(i).getName());
                     }
                 }
-                if(index == -1){
-                    System.out.println("Error must register before signing in.");
-                    break;
+                if(command.equals("2")){
+                    for(int i = 0; i < m.getOwners().size(); i++){
+                        System.out.println(m.getOwners().get(i).viewProperties());
+                    }
                 }
-                System.out.println("1)Register Property, 2)View Properties, 3)Pay Tax,");
+                if(command.equals("3")){
+                    System.out.println("Please enter property eircode: ");
+                    String eircode = in.nextLine();
+                    for(int i = 0; i < m.getOwners().size(); i++){
+                        for(int j = 0; j < m.getOwners().get(i).getProperties().size(); j++){
+                            if(m.getOwners().get(i).getProperties().get(j).getEircode().equals(eircode)){
+                                System.out.println(m.getOwners().get(i).balancingStatement(m.getOwners().get(i).getProperties().get(j)));
+                            }
+                        }
+                    }
+                }
+                if(command.equals("4")){
+                    System.out.println("Please enter Owner name: ");
+                    String name = in.nextLine();
+                    for(int i = 0; i < m.getOwners().size(); i++){
+                        if(m.getOwners().get(i).getName().equals(name)){
+                            System.out.println(m.getOwners().get(i).viewPaidTax());
+                            System.out.println(m.getOwners().get(i).viewDueTax());
+                            System.out.println(m.getOwners().get(i).viewOverdueTax());
+                        }
+                    }
+                }
+                if(command.equals("5")){
+                    System.out.println("Please enter Owner name: ");
+                    String name = in.nextLine();
+                    for(int i = 0; i < m.getOwners().size(); i++){
+                        if(m.getOwners().get(i).getName().equals(name)){
+                            System.out.println(m.getOwners().get(i).viewOverdueTax());
+                        }
+                    }
+                }
+                if(command.equals("6")){
+                    System.out.println("Please enter routing key: ");
+                    String key = in.nextLine();
+                    System.out.println(m.getStats(key));
+                }
+                if(command.equals("7")){
+
+                }
+                if(command.equals("E")){
+                    return;
+                }
+            }
+        }
+        System.out.println("Would you like to: 1)Register 2)Sign In E)xit");
+        command = in.nextLine().toUpperCase();
+        if(command.equals("1")){
+            System.out.println("Please enter your name: ");
+            command = in.nextLine();
+            m.registerOwner(command);
+            System.out.println("Registered User: " + command);
+            for (int i = 0; i < m.getOwners().size(); i++) {
+                if (m.getOwners().get(i).getName().equals(command)) {
+                    index = i;
+                }
+            }
+        }
+        if(command.equals("2")) {
+            System.out.println("Please enter your name: ");
+            currentUser = in.nextLine();
+            for (int i = 0; i < m.getOwners().size(); i++) {
+                if (m.getOwners().get(i).getName().equals(currentUser)) {
+                    index = i;
+                }
+            }
+            if (index == -1) {
+                System.out.println("Error must register before signing in.");
+            }
+        }
+        if(command.equals("E")){
+            return;
+        }
+        boolean more = true;
+        loggedIn = true;
+        while (loggedIn) {
+            /* Owner Commands*/
+                System.out.println("\n1)Register Property, 2)View Properties, 3)Pay Tax,");
                 System.out.println("4)View Paid Tax, 5)View Due Tax, 6)View Overdue Tax,");
-                System.out.println("7)View Balancing Statements, E)xit");
+                System.out.println("7)View Balancing Statements, 8)Payment History, E)xit");
                 command = in.nextLine().toUpperCase();
                 if (command.equals("1")) {
                     System.out.println("Please enter Address: ");
@@ -93,12 +167,15 @@ public class CLI {
                     int temp = Integer.valueOf(in.nextLine());
                     System.out.println(m.getOwners().get(index).balancingStatement(temp));
                 }
-                if(command.equals("E")){
-                    more = false;
+                if(command.equals("8")){
+                    m.getOwners().get(index).getPayments();
                 }
-            }
+                if(command.equals("E")){
+                    break;
+                }
+
             if(command.equals("E")){
-                more = false;
+                break;
             }
         }
     }
