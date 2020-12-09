@@ -2,7 +2,12 @@ import java.io.*;
 import java.util.ArrayList;
 
 public class Owner {
+
+
     private String name;
+
+
+
     /*List of properties*/
     private ArrayList<Property> properties = new ArrayList<>();
     public Owner(String name){
@@ -33,10 +38,6 @@ public class Owner {
                 history.get(i).setPaid();
             }
         }
-
-
-
-        /* Need to add to CSV file*/
     }
     public void viewPaidTax(){
         /* Prints all PAID Taxes */
@@ -80,6 +81,34 @@ public class Owner {
             }
         }
     }
+    public void viewOverdueTax(int year){
+        /* Prints all OVERDUE Taxes for a YEAR */
+        for (int i = 0; i< properties.size(); i++){
+            Property p = properties.get(i);
+            System.out.println("\nTaxes Overdue for Property at " + p.getAddress());
+            ArrayList<PropertyTax> history = p.getTaxHistory();
+            for (int y = 0; y < history.size(); y++){
+                PropertyTax tax = history.get(y);
+                if ((!tax.getPaid())&&(tax.getYear() == year)){
+                    System.out.println("Tax Overdue: " + tax.getTax());
+                }
+            }
+        }
+    }
+    public void viewOverdueTax(String routKey, int year){
+        /* Prints all OVERDUE Taxes for a YEAR in a ROUTING KEY*/
+        for (int i = 0; i< properties.size(); i++){
+            Property p = properties.get(i);
+            System.out.println("\nTaxes Overdue for Property at " + p.getAddress());
+            ArrayList<PropertyTax> history = p.getTaxHistory();
+            for (int y = 0; y < history.size(); y++){
+                PropertyTax tax = history.get(y);
+                if ((!tax.getPaid())&&(tax.getEircode().substring(0,3).equals(routKey))&&(tax.getYear() == year)){
+                    System.out.println("Tax Overdue: " + tax.getTax());
+                }
+            }
+        }
+    }
     public void balancingStatement(int year){
         /* Shows amount of tax, paid and unpaid, for specific year*/
         double unpaid = 0;
@@ -116,5 +145,8 @@ public class Owner {
     }
     public String getName() {
         return name;
+    }
+    public ArrayList<Property> getProperties() {
+        return properties;
     }
 }
