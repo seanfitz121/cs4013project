@@ -1,3 +1,7 @@
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Owner {
@@ -149,7 +153,7 @@ public class Owner {
         }
         return s;
     }
-    
+
     public void getPayments(){
         String row;
         BufferedReader csvReader = null;
@@ -173,7 +177,7 @@ public class Owner {
             }
         }
     }
-    
+
     public String getName() {
         return name;
     }
