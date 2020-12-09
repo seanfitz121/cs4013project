@@ -79,18 +79,20 @@ public class Management
             owners.get(i).viewOverdueTax(routKey, year);
         }
     }
-    public void getStats(String routKey){
-        System.out.println("\nStats for " + routKey);
+    public String getStats(String routKey){
+        String s = "";
+        s = "\nStats for " + routKey +"\n";
         double totalTax = getTotalTax(routKey);
-        System.out.println("Total Tax: " + totalTax);
+        s = s + "Total Tax: " + totalTax + "\n";
         double[] avgAndAmount = new double[2];
         avgAndAmount = getAverageAndAmount(routKey);
         double averageTax = avgAndAmount[0];
-        System.out.println("Average Tax: " + averageTax);
+        s = s + "Average Tax: " + averageTax + "\n";
         int number = (int)avgAndAmount[1];
-        System.out.println("Number of Payments: " + number);
+        s = s + "Number of Payments: " + number + "\n";
         double percentage = getPercentage(routKey, number);
-        System.out.println("Percentage of Taxes Paid: " + percentage);
+        s = s + "Percentage of Taxes Paid: " + percentage + "\n";
+        return s;
     }
     private double getTotalTax(String routKey){
         //Total Tax Paid for Area
