@@ -3,11 +3,7 @@ import java.util.ArrayList;
 
 public class Owner {
 
-
     private String name;
-
-
-
     /*List of properties*/
     private ArrayList<Property> properties = new ArrayList<>();
     public Owner(String name){
@@ -17,12 +13,11 @@ public class Owner {
         Property p = new Property(address, eircode, marketValue, locationCategory, ppr, year);
         p.createTaxHistory();
         properties.add(p);
-        System.out.println(p.getAddress() + " Registered");
+
     }
     public void registerProperty(Property p){
         p.createTaxHistory();
         properties.add(p);
-        System.out.println(p.getAddress() + " Registered");
     }
     public void viewProperties(){
         /* Prints properties array */
@@ -39,47 +34,53 @@ public class Owner {
             }
         }
     }
-    public void viewPaidTax(){
+    public String viewPaidTax(){
         /* Prints all PAID Taxes */
+        String s = "";
         for (int i = 0; i< properties.size(); i++){
             Property p = properties.get(i);
-            System.out.println("\nTaxes Paid for Property at " + p.getAddress());
+            s = "\nTaxes Paid for Property at " + String.valueOf(p.getAddress());
             ArrayList<PropertyTax> history = p.getTaxHistory();
             for (int y = 0; y < history.size(); y++){
                 PropertyTax tax = history.get(y);
                 if (tax.getPaid()){
-                    System.out.println("\nYear: " + tax.getYear() + "\nTax Paid: " + tax.getTax());
+                    s = s + "\nYear: " + tax.getYear() + "\nTax Paid: " + tax.getTax();
                 }
             }
         }
+        return s;
     }
-    public void viewDueTax(){
+    public String viewDueTax(){
         /* Prints THIS YEARS DUE Taxes */
+        String s = "";
         for (int i = 0; i< properties.size(); i++){
             Property p = properties.get(i);
-            System.out.println("\nTax Due this year for Property at " + p.getAddress());
+            s = "\nTax Due this year for Property at " + p.getAddress();
             ArrayList<PropertyTax> history = p.getTaxHistory();
             for (int y = 0; y < history.size(); y++){
                 PropertyTax tax = history.get(y);
                 if (!tax.getPaid()&&(tax.getYear() == 2020)){
-                    System.out.println("\nTax Due: " + tax.getTax());
+                    s = s + "\nTax Due: " + tax.getTax();
                 }
             }
         }
+        return s;
     }
-    public void viewOverdueTax(){
+    public String viewOverdueTax(){
         /* Prints all OVERDUE Taxes, i.e NOT this years */
+        String s = "";
         for (int i = 0; i< properties.size(); i++){
             Property p = properties.get(i);
-            System.out.println("\nTaxes Overdue for Property at " + p.getAddress());
+            s = "\nTaxes Overdue for Property at " + p.getAddress();
             ArrayList<PropertyTax> history = p.getTaxHistory();
             for (int y = 0; y < history.size(); y++){
                 PropertyTax tax = history.get(y);
                 if ((!tax.getPaid())&&(tax.getYear() != 2020)){
-                    System.out.println("\nYear: " + tax.getYear() + "\nTax Overdue: " + tax.getTax());
+                    s = s + "\nYear: " + tax.getYear() + "\nTax Overdue: " + tax.getTax();
                 }
             }
         }
+        return s;
     }
     public void viewOverdueTax(int year){
         /* Prints all OVERDUE Taxes for a YEAR */
@@ -109,7 +110,7 @@ public class Owner {
             }
         }
     }
-    public void balancingStatement(int year){
+    public String balancingStatement(int year){
         /* Shows amount of tax, paid and unpaid, for specific year*/
         double unpaid = 0;
         double paid = 0;
@@ -127,8 +128,10 @@ public class Owner {
                 }
             }
         }
-        System.out.println("\nPaid tax in this year: " + year + ", " + paid);
-        System.out.println("\nUnpaid tax in this year: " + year + ", " + unpaid);
+        String s = "";
+        s = "\nPaid tax in this year: " + year + ", " + paid;
+        s = s + "\nUnpaid tax in this year: " + year + ", " + unpaid;
+        return s;
     }
     public void balancingStatement(Property p){
         /* Shows amount of tax paid for specific Property*/
@@ -139,9 +142,9 @@ public class Owner {
             if (tax.getPaid()){
                 System.out.println("\nYear: " + tax.getYear() + "\nTax Paid: " + tax.getTax());
             } else {
-               System.out.println("\nYear: " + tax.getYear() + "\nTax Due: " + tax.getTax());
+                System.out.println("\nYear: " + tax.getYear() + "\nTax Due: " + tax.getTax());
             }
-        }    
+        }
     }
     public String getName() {
         return name;
