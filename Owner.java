@@ -149,6 +149,31 @@ public class Owner {
         }
         return s;
     }
+    
+    public void getPayments(){
+        String row;
+        BufferedReader csvReader = null;
+        for(int x = 0; x < properties.size(); x++) {
+            String eircode = properties.get(x).getEircode();
+            try {
+                csvReader = new BufferedReader(new FileReader("record.csv"));
+                while ((row = csvReader.readLine()) != null) {
+                    String[] data = row.split(",");
+                    for (int i = 0; i < data.length; i++) {
+                        if (data[i].equals(eircode)) {
+                            System.out.println(data[i] + " Amount: " + data[i + 1] + " Year of Registration: " + data[i + 2] + " Year Paid: " + data[i + 3]);
+                        }
+                    }
+                }
+                csvReader.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
     public String getName() {
         return name;
     }
