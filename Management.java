@@ -37,10 +37,11 @@ public class Management
             e.printStackTrace();
         }
     }
-    public void getPropertyTaxFromOwner(String name){
+    public ArrayList<String> getPropertyTaxFromOwner(String name){
         String row;
         BufferedReader csvReader = null;
         System.out.println("Property tax for " + name);
+        ArrayList<String> s = new ArrayList<String>();
         for(int y = 0; y < owners.size(); y++) {
             Owner o = owners.get(y);
             if (o.getName().equals(name)) {
@@ -52,7 +53,7 @@ public class Management
                             String[] data = row.split(",");
                             for (int i = 0; i < data.length; i++) {
                                 if (data[i].equals(eircode)) {
-                                    System.out.println(data[i] + " " + data[i + 1] + " " + data[i + 2] + " " + data[i + 3]);
+                                    s.add(data[i] + " " + data[i + 1] + " " + data[i + 2] + " " + data[i + 3]);
                                 }
                             }
                         }
@@ -65,12 +66,13 @@ public class Management
                 }
             }
         }
-        System.out.println();
+        return s;
     }
     public void getOverdueTaxForYear(int year){
+        String s = "";
         for(int i = 0; i < owners.size(); i++){
-            System.out.println("Taxes Overdue for " + owners.get(i).getName() + " in " + year +":");
-            owners.get(i).viewOverdueTax(year);
+            s = s + ("\nTaxes Overdue for " + owners.get(i).getName() + " in " + year +":");
+            s = s + owners.get(i).viewOverdueTax(year);
         }
     }
     public void getOverdueTaxForYear(String routKey, int year){
@@ -262,6 +264,7 @@ public class Management
         System.out.println("Tax After:" + taxAfter);
     }
     public ArrayList<Owner> getOwners(){
+        System.out.println();
         return this.owners;
     }
 }
