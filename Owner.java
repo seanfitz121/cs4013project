@@ -26,7 +26,7 @@ public class Owner {
         /* Prints properties array */
         String s = "";
         for (int i = 0; i< properties.size(); i++){
-            s = s + properties.get(i).toString();
+            s = s + "\n --------------- \n" + properties.get(i).toString();
         }
         return s;
     }
@@ -71,35 +71,37 @@ public class Owner {
         }
         return s;
     }
-    public String viewOverdueTax(){
+    public ArrayList<String> viewOverdueTax(){
         /* Prints all OVERDUE Taxes, i.e NOT this years */
-        String s = "";
+        ArrayList<String> ss = new ArrayList<>();
         for (int i = 0; i< properties.size(); i++){
             Property p = properties.get(i);
-            s = "\nTaxes Overdue for Property at " + p.getAddress();
+            ss.add("\nTaxes Overdue for Property at " + p.getAddress());
             ArrayList<PropertyTax> history = p.getTaxHistory();
             for (int y = 0; y < history.size(); y++){
                 PropertyTax tax = history.get(y);
                 if ((!tax.getPaid())&&(tax.getYear() != 2020)){
-                    s = s + "\nYear: " + tax.getYear() + "\nTax Overdue: " + tax.getTax();
+                    ss.add("\nYear: " + tax.getYear() + "\nTax Overdue: " + tax.getTax());
                 }
             }
         }
-        return s;
+        return ss;
     }
-    public void viewOverdueTax(int year){
+    public String viewOverdueTax(int year){
         /* Prints all OVERDUE Taxes for a YEAR */
+        String s = "";
         for (int i = 0; i< properties.size(); i++){
             Property p = properties.get(i);
-            System.out.println("\nTaxes Overdue for Property at " + p.getAddress());
+            s = s + ("\nTaxes Overdue for Property at " + p.getAddress());
             ArrayList<PropertyTax> history = p.getTaxHistory();
             for (int y = 0; y < history.size(); y++){
                 PropertyTax tax = history.get(y);
                 if ((!tax.getPaid())&&(tax.getYear() == year)){
-                    System.out.println("Tax Overdue: " + tax.getTax());
+                    s = s + ("Tax Overdue: " + tax.getTax());
                 }
             }
         }
+        return s;
     }
     public void viewOverdueTax(String routKey, int year){
         /* Prints all OVERDUE Taxes for a YEAR in a ROUTING KEY*/
