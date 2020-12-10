@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class CLI {
@@ -55,23 +56,35 @@ public class CLI {
                 if(command.equals("4")){
                     System.out.println("Please enter Owner name: ");
                     String name = in.nextLine();
-                    m.getPropertyTaxFromOwner(name);
+                    ArrayList<String> s = m.getPropertyTaxFromOwner(name);
+                    for(int i = 0; i < s.size(); i++){
+                        System.out.println(s.get(i));
+                    }
                 }
                 if(command.equals("5")){
-                    System.out.println("Please enter Owner name: ");
+                    System.out.println("Please enter Year: ");
+                    int year = Integer.parseInt(in.nextLine());
+                    for(int i = 0; i < m.getOwners().size(); i++){
+                        System.out.println(m.getOwners().get(i).viewOverdueTax(year));
+                    }
+                }
+                if(command.equals("6")){
+                    System.out.println("Please enter Year: ");
                     String name = in.nextLine();
+                    System.out.println("Please enter Routing Key: ");
+                    String routKey = in.nextLine();
                     for(int i = 0; i < m.getOwners().size(); i++){
                         if(m.getOwners().get(i).getName().equals(name)){
                             System.out.println(m.getOwners().get(i).viewOverdueTax());
                         }
                     }
                 }
-                if(command.equals("6")){
+                if(command.equals("7")){
                     System.out.println("Please enter routing key: ");
                     String key = in.nextLine();
                     System.out.println(m.getStats(key));
                 }
-                if(command.equals("7")){
+                if(command.equals("8")){
                     System.out.println("\nZ) Tweak the Market Tax Band");
                     System.out.println("X) Tweak the Market Tax Percentages");
                     System.out.println("C) Tweak the Penalty Percentage");
