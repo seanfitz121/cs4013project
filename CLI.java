@@ -8,7 +8,7 @@ public class CLI {
     boolean loggedIn;
     boolean managerLoggedIn;
     String currentUser;
-    int index = 0;
+    int index = -1;
 
     /**
      * Constructs CLI object
