@@ -71,24 +71,8 @@ public class Owner {
         }
         return s;
     }
-    public ArrayList<String> viewOverdueTax(){
+    public String viewOverdueTax(){
         /* Prints all OVERDUE Taxes, i.e NOT this years */
-        ArrayList<String> ss = new ArrayList<>();
-        for (int i = 0; i< properties.size(); i++){
-            Property p = properties.get(i);
-            ss.add("\nTaxes Overdue for Property at " + p.getAddress());
-            ArrayList<PropertyTax> history = p.getTaxHistory();
-            for (int y = 0; y < history.size(); y++){
-                PropertyTax tax = history.get(y);
-                if ((!tax.getPaid())&&(tax.getYear() != 2020)){
-                    ss.add("\nYear: " + tax.getYear() + "\nTax Overdue: " + tax.getTax());
-                }
-            }
-        }
-        return ss;
-    }
-    public String viewOverdueTax(int year){
-        /* Prints all OVERDUE Taxes for a YEAR */
         String s = "";
         for (int i = 0; i< properties.size(); i++){
             Property p = properties.get(i);
@@ -96,26 +80,46 @@ public class Owner {
             ArrayList<PropertyTax> history = p.getTaxHistory();
             for (int y = 0; y < history.size(); y++){
                 PropertyTax tax = history.get(y);
-                if ((!tax.getPaid())&&(tax.getYear() == year)){
-                    s = s + ("Tax Overdue: " + tax.getTax());
+                if ((!tax.getPaid())&&(tax.getYear() != 2020)){
+                    s = s + ("\nYear: " + tax.getYear() + "\nTax Overdue: " + tax.getTax());
                 }
             }
         }
         return s;
     }
-    public void viewOverdueTax(String routKey, int year){
-        /* Prints all OVERDUE Taxes for a YEAR in a ROUTING KEY*/
+    public String viewOverdueTax(int year){
+        /* Prints all OVERDUE Taxes for a YEAR */
+        String s = "";
         for (int i = 0; i< properties.size(); i++){
             Property p = properties.get(i);
-            System.out.println("\nTaxes Overdue for Property at " + p.getAddress());
+
+            ArrayList<PropertyTax> history = p.getTaxHistory();
+            for (int y = 0; y < history.size(); y++){
+                PropertyTax tax = history.get(y);
+                if ((!tax.getPaid())&&(tax.getYear() == year)){
+                    s = s + ("\nTaxes Overdue for Property at " + p.getAddress());
+                    s = s + ("\nTax Overdue: " + tax.getTax());
+                }
+            }
+        }
+        return s;
+    }
+    public String viewOverdueTax(String routKey, int year){
+        /* Prints all OVERDUE Taxes for a YEAR in a ROUTING KEY*/
+        String s = "";
+        for (int i = 0; i< properties.size(); i++){
+            Property p = properties.get(i);
+
             ArrayList<PropertyTax> history = p.getTaxHistory();
             for (int y = 0; y < history.size(); y++){
                 PropertyTax tax = history.get(y);
                 if ((!tax.getPaid())&&(tax.getEircode().substring(0,3).equals(routKey))&&(tax.getYear() == year)){
-                    System.out.println("Tax Overdue: " + tax.getTax());
+                    s = s + ("\nTaxes Overdue for Property at " + p.getAddress());
+                    s = s + ("\nTax Overdue: " + tax.getTax());
                 }
             }
         }
+        return s;
     }
     public String balancingStatement(int year){
         /* Shows amount of tax, paid and unpaid, for specific year*/
@@ -156,8 +160,29 @@ public class Owner {
         return s;
     }
 
-    public void getPayments(){
+    public String balancingStatement(String eircode){
+        /* Shows amount of tax paid for specific Property*/
+        String s = "";
+        s = "\nAll taxes for Property at " + eircode;
+        for(int i = 0; i < properties.size(); i++) {
+            if(properties.get(i).getEircode().equals(eircode)) {
+                ArrayList<PropertyTax> history = properties.get(i).getTaxHistory();
+                for (int y = 0; y < history.size(); y++){
+                    PropertyTax tax = history.get(y);
+                    if (tax.getPaid()){
+                        s = s + "\nYear: " + tax.getYear() + "\nTax Paid: " + tax.getTax();
+                    } else {
+                        s = s + "\nYear: " + tax.getYear() + "\nTax Due: " + tax.getTax();
+                    }
+                }
+            }
+        }
+        return s;
+    }
+
+    public String getPayments(){
         String row;
+        String s = "";
         BufferedReader csvReader = null;
         for(int x = 0; x < properties.size(); x++) {
             String eircode = properties.get(x).getEircode();
@@ -167,7 +192,7 @@ public class Owner {
                     String[] data = row.split(",");
                     for (int i = 0; i < data.length; i++) {
                         if (data[i].equals(eircode)) {
-                            System.out.println(data[i] + " Amount: " + data[i + 1] + " Year of Registration: " + data[i + 2] + " Year Paid: " + data[i + 3]);
+                            s = s + ("\n" + data[i] + "\nAmount: " + data[i + 1] + "\nYear of Registration: " + data[i + 2] + "\nYear Paid: " + data[i + 3] +"\n");
                         }
                     }
                 }
@@ -178,6 +203,7 @@ public class Owner {
                 e.printStackTrace();
             }
         }
+        return s;
     }
 
     public String getName() {
