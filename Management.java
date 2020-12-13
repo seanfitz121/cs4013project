@@ -71,7 +71,7 @@ public class Management
     public void getOverdueTaxForYear(int year){
         String s = "";
         for(int i = 0; i < owners.size(); i++){
-            s = s + ("\nTaxes Overdue for " + owners.get(i).getName() + " in " + year +":");
+            s = s + ("\nTaxes Overdue for " + owners.get(i).getName() + " in " + year +":\n");
             s = s + owners.get(i).viewOverdueTax(year);
         }
     }
@@ -96,30 +96,29 @@ public class Management
         s = s + "Percentage of Taxes Paid: " + percentage + "\n";
         return s;
     }
-    private double getTotalTax(String routKey){
+    private double getTotalTax(String routKey) {
         //Total Tax Paid for Area
         double totalTax = 0;
         String row;
         BufferedReader csvReader = null;
-        for(int y = 0; y < owners.size(); y++) {
-            Owner o = owners.get(y);
-            try {
-                csvReader = new BufferedReader(new FileReader("record.csv"));
-                while ((row = csvReader.readLine()) != null) {
-                    String[] data = row.split(",");
-                    for (int i = 0; i < data.length; i++) {
-                        if (data[i].substring(0,3).equals(routKey)) {
-                            totalTax = totalTax + Double.parseDouble(data[i+1]);
-                        }
+
+        try {
+            csvReader = new BufferedReader(new FileReader("record.csv"));
+            while ((row = csvReader.readLine()) != null) {
+                String[] data = row.split(",");
+                for (int i = 0; i < data.length; i++) {
+                    if (data[i].substring(0, 3).equals(routKey)) {
+                        totalTax = totalTax + Double.parseDouble(data[i + 1]);
                     }
                 }
-                csvReader.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+            csvReader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
         return totalTax;
     }
     private double[] getAverageAndAmount(String routKey){
@@ -128,8 +127,7 @@ public class Management
         ArrayList<Double> numbers = new ArrayList<>();
         String row;
         BufferedReader csvReader = null;
-        for(int y = 0; y < owners.size(); y++) {
-            Owner o = owners.get(y);
+
             try {
                 csvReader = new BufferedReader(new FileReader("record.csv"));
                 while ((row = csvReader.readLine()) != null) {
@@ -146,7 +144,7 @@ public class Management
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+
         int count = 0;
         for(int i = 0; i < numbers.size(); i++, count++){
             averageTax = averageTax + numbers.get(i);
@@ -165,103 +163,143 @@ public class Management
         }
         return (((double)count)/((double)amount))*100;
     }
-    public void tweakMarketTaxBand(String name, double upperBand, double middleBand, double lowerBand){
+    public String tweakMarketTaxBand(String name, double upperBand, double middleBand, double lowerBand){
         double taxBefore = 0;
         double taxAfter = 0;
+        double beforeCount = 0;
+        double afterCount = 0;
+        String s = "";
         for(int j = 0; j < owners.size(); j++) {
             if (owners.get(j).getName().equals(name)) {
                 for (int x = 0; x < owners.get(j).getProperties().size(); x++) {
                     Property p = owners.get(j).getProperties().get(x);
+                    taxBefore = 0;
+                    taxAfter = 0;
                     for (int i = 0; i < p.getTaxHistory().size(); i++) {
-                        taxBefore = taxBefore + p.getTaxHistory().get(i).getPropertyTax(p.getTaxHistory().get(i).getYear());
+                        taxBefore = taxBefore + p.getTaxHistory().get(i).getPropertyTax(p.getTaxHistory().get(i).getAddress(), p.getTaxHistory().get(i).getEircode(), p.getTaxHistory().get(i).getMarketValue(), p.getTaxHistory().get(i).getLocationCategory(), p.getTaxHistory().get(i).isPpr(), p.getTaxHistory().get(i).getRegYear(), p.getTaxHistory().get(i).getYear());
                         p.getTaxHistory().get(i).setUpperBand(upperBand);
                         p.getTaxHistory().get(i).setMiddleBand(middleBand);
                         p.getTaxHistory().get(i).setLowerBand(lowerBand);
-                        taxAfter = taxAfter + p.getTaxHistory().get(i).getPropertyTax(p.getTaxHistory().get(i).getYear());
+                        taxAfter = taxAfter + p.getTaxHistory().get(i).getPropertyTax(p.getTaxHistory().get(i).getAddress(), p.getTaxHistory().get(i).getEircode(), p.getTaxHistory().get(i).getMarketValue(), p.getTaxHistory().get(i).getLocationCategory(), p.getTaxHistory().get(i).isPpr(), p.getTaxHistory().get(i).getRegYear(), p.getTaxHistory().get(i).getYear());;
                     }
+                    beforeCount = beforeCount + taxBefore;
+                    afterCount = afterCount + taxAfter;
                 }
             }
         }
-        System.out.println("Tax Before:" + taxBefore);
-        System.out.println("Tax After:" + taxAfter);
+        s = s + ("\nTax Before:" + beforeCount);
+        s = s + ("\nTax After:" + afterCount);
+        return s;
     }
-    public void tweakMarketTaxPercentages(String name, double upperBandPerc, double middleBandPerc, double lowerBandPerc){
+    public String tweakMarketTaxPercentages(String name, double upperBandPerc, double middleBandPerc, double lowerBandPerc){
         double taxBefore = 0;
         double taxAfter = 0;
+        double beforeCount = 0;
+        double afterCount = 0;
+        String s = "";
         for(int j = 0; j < owners.size(); j++) {
             if (owners.get(j).getName().equals(name)) {
                 for (int x = 0; x < owners.get(j).getProperties().size(); x++) {
                     Property p = owners.get(j).getProperties().get(x);
+                    taxBefore = 0;
+                    taxAfter = 0;
                     for (int i = 0; i < p.getTaxHistory().size(); i++) {
-                        taxBefore = taxBefore + p.getTaxHistory().get(i).getPropertyTax(p.getTaxHistory().get(i).getYear());
+                        taxBefore = taxBefore + p.getTaxHistory().get(i).getPropertyTax(p.getTaxHistory().get(i).getAddress(), p.getTaxHistory().get(i).getEircode(), p.getTaxHistory().get(i).getMarketValue(), p.getTaxHistory().get(i).getLocationCategory(), p.getTaxHistory().get(i).isPpr(), p.getTaxHistory().get(i).getRegYear(), p.getTaxHistory().get(i).getYear());
                         p.getTaxHistory().get(i).setUpperBandPerc(upperBandPerc);
                         p.getTaxHistory().get(i).setMiddleBandPerc(middleBandPerc);
                         p.getTaxHistory().get(i).setLowerBandPerc(lowerBandPerc);
-                        taxAfter = taxAfter + p.getTaxHistory().get(i).getPropertyTax(p.getTaxHistory().get(i).getYear());
+                        taxAfter = taxAfter + p.getTaxHistory().get(i).getPropertyTax(p.getTaxHistory().get(i).getAddress(), p.getTaxHistory().get(i).getEircode(), p.getTaxHistory().get(i).getMarketValue(), p.getTaxHistory().get(i).getLocationCategory(), p.getTaxHistory().get(i).isPpr(), p.getTaxHistory().get(i).getRegYear(), p.getTaxHistory().get(i).getYear());
                     }
+                    beforeCount = beforeCount + taxBefore;
+                    afterCount = afterCount + taxAfter;
                 }
             }
         }
-        System.out.println("Tax Before:" + taxBefore);
-        System.out.println("Tax After:" + taxAfter);
+        s = s + ("\nTax Before:" + beforeCount);
+        s = s + ("\nTax After:" + afterCount);
+        return s;
     }
-    public void tweakPenalty(String name, double penalty){
+    public String tweakPenalty(String name, double penalty){
         double taxBefore = 0;
         double taxAfter = 0;
+        double beforeCount = 0;
+        double afterCount = 0;
+        String s = "";
         for(int j = 0; j < owners.size(); j++) {
             if (owners.get(j).getName().equals(name)) {
                 for (int x = 0; x < owners.get(j).getProperties().size(); x++) {
                     Property p = owners.get(j).getProperties().get(x);
+                    taxBefore = 0;
+                    taxAfter = 0;
                     for (int i = 0; i < p.getTaxHistory().size(); i++) {
-                        taxBefore = taxBefore + p.getTaxHistory().get(i).getPropertyTax(p.getTaxHistory().get(i).getYear());
+                        taxBefore = taxBefore + p.getTaxHistory().get(i).getPropertyTax(p.getTaxHistory().get(i).getAddress(), p.getTaxHistory().get(i).getEircode(), p.getTaxHistory().get(i).getMarketValue(), p.getTaxHistory().get(i).getLocationCategory(), p.getTaxHistory().get(i).isPpr(), p.getTaxHistory().get(i).getRegYear(), p.getTaxHistory().get(i).getYear());;
                         p.getTaxHistory().get(i).setPenalty(penalty);
-                        taxAfter = taxAfter + p.getTaxHistory().get(i).getPropertyTax(p.getTaxHistory().get(i).getYear());
+                        taxAfter = taxAfter + p.getTaxHistory().get(i).getPropertyTax(p.getTaxHistory().get(i).getAddress(), p.getTaxHistory().get(i).getEircode(), p.getTaxHistory().get(i).getMarketValue(), p.getTaxHistory().get(i).getLocationCategory(), p.getTaxHistory().get(i).isPpr(), p.getTaxHistory().get(i).getRegYear(), p.getTaxHistory().get(i).getYear());;
                     }
+                    beforeCount = beforeCount + taxBefore;
+                    afterCount = afterCount + taxAfter;
                 }
             }
         }
-        System.out.println("Tax Before:" + taxBefore);
-        System.out.println("Tax After:" + taxAfter);
+        s = s + ("\nTax Before:" + beforeCount);
+        s = s + ("\nTax After:" + afterCount);
+        return s;
     }
-    public void tweakLocationTax(String name, double City, double LargeT, double SmallT, double Village, double Countryside){
+    public String tweakLocationTax(String name, double City, double LargeT, double SmallT, double Village, double Countryside){
         double taxBefore = 0;
         double taxAfter = 0;
+        double beforeCount = 0;
+        double afterCount = 0;
+        String s = "";
         for(int j = 0; j < owners.size(); j++) {
             if (owners.get(j).getName().equals(name)) {
                 for (int x = 0; x < owners.get(j).getProperties().size(); x++) {
                     Property p = owners.get(j).getProperties().get(x);
+                    taxBefore = 0;
+                    taxAfter = 0;
                     for (int i = 0; i < p.getTaxHistory().size(); i++) {
-                        taxBefore = taxBefore + p.getTaxHistory().get(i).getPropertyTax(p.getTaxHistory().get(i).getYear());
+                        taxBefore = taxBefore + p.getTaxHistory().get(i).getPropertyTax(p.getTaxHistory().get(i).getAddress(), p.getTaxHistory().get(i).getEircode(), p.getTaxHistory().get(i).getMarketValue(), p.getTaxHistory().get(i).getLocationCategory(), p.getTaxHistory().get(i).isPpr(), p.getTaxHistory().get(i).getRegYear(), p.getTaxHistory().get(i).getYear());;
                         p.getTaxHistory().get(i).setCity(City);
                         p.getTaxHistory().get(i).setLargeT(LargeT);
                         p.getTaxHistory().get(i).setSmallT(SmallT);
                         p.getTaxHistory().get(i).setVillage(Village);
                         p.getTaxHistory().get(i).setCountryside(Countryside);
-                        taxAfter = taxAfter + p.getTaxHistory().get(i).getPropertyTax(p.getTaxHistory().get(i).getYear());
+                        taxAfter = taxAfter + p.getTaxHistory().get(i).getPropertyTax(p.getTaxHistory().get(i).getAddress(), p.getTaxHistory().get(i).getEircode(), p.getTaxHistory().get(i).getMarketValue(), p.getTaxHistory().get(i).getLocationCategory(), p.getTaxHistory().get(i).isPpr(), p.getTaxHistory().get(i).getRegYear(), p.getTaxHistory().get(i).getYear());;
                     }
+                    beforeCount = beforeCount + taxBefore;
+                    afterCount = afterCount + taxAfter;
                 }
             }
         }
-        System.out.println("Tax Before:" + taxBefore);
-        System.out.println("Tax After:" + taxAfter);
+        s = s + ("\nTax Before:" + beforeCount);
+        s = s + ("\nTax After:" + afterCount);
+        return s;
     }
-    public void tweakPPRTax(String name, double pprVal){
+    public String tweakPPRTax(String name, double pprVal){
         double taxBefore = 0;
         double taxAfter = 0;
+        double beforeCount = 0;
+        double afterCount = 0;
+        String s = "";
         for(int j = 0; j < owners.size(); j++) {
             if (owners.get(j).getName().equals(name)) {
                 for (int x = 0; x < owners.get(j).getProperties().size(); x++) {
                     Property p = owners.get(j).getProperties().get(x);
+                    taxBefore = 0;
+                    taxAfter = 0;
                     for (int i = 0; i < p.getTaxHistory().size(); i++) {
-                        taxBefore = taxBefore + p.getTaxHistory().get(i).getPropertyTax(p.getTaxHistory().get(i).getYear());
+                        taxBefore = taxBefore + p.getTaxHistory().get(i).getPropertyTax(p.getTaxHistory().get(i).getAddress(), p.getTaxHistory().get(i).getEircode(), p.getTaxHistory().get(i).getMarketValue(), p.getTaxHistory().get(i).getLocationCategory(), p.getTaxHistory().get(i).isPpr(), p.getTaxHistory().get(i).getRegYear(), p.getTaxHistory().get(i).getYear());;
                         p.getTaxHistory().get(i).setPprVal(pprVal);
-                        taxAfter = taxAfter + p.getTaxHistory().get(i).getPropertyTax(p.getTaxHistory().get(i).getYear());
+                        taxAfter = taxAfter + p.getTaxHistory().get(i).getPropertyTax(p.getTaxHistory().get(i).getAddress(), p.getTaxHistory().get(i).getEircode(), p.getTaxHistory().get(i).getMarketValue(), p.getTaxHistory().get(i).getLocationCategory(), p.getTaxHistory().get(i).isPpr(), p.getTaxHistory().get(i).getRegYear(), p.getTaxHistory().get(i).getYear());;
                     }
+                    beforeCount = beforeCount + taxBefore;
+                    afterCount = afterCount + taxAfter;
                 }
             }
         }
-        System.out.println("Tax Before:" + taxBefore);
-        System.out.println("Tax After:" + taxAfter);
+        s = s + ("\nTax Before:" + beforeCount);
+        s = s + ("\nTax After:" + afterCount);
+        return s;
     }
     public ArrayList<Owner> getOwners(){
         System.out.println();
