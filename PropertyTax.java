@@ -6,13 +6,19 @@ public class PropertyTax extends Property{
     private boolean paid;
     private int year;
     private int regYear;
+    private String address;
+    private String eircode;
+    private double marketValue;
+    private String locationCategory;
+
+    private boolean ppr;
 
     private double upperBand = 650000;
-    private double upperBandPerc = .04;
+    private double upperBandPerc = .0004;
     private double middleBand = 400001;
-    private double middleBandPerc = .02;
+    private double middleBandPerc = .0002;
     private double lowerBand = 150000;
-    private double lowerBandPerc = .01;
+    private double lowerBandPerc = .0001;
 
     private double penalty = 1.07;
 
@@ -26,51 +32,50 @@ public class PropertyTax extends Property{
 
     public PropertyTax(String address, String eircode, double marketValue, String locationCategory, boolean ppr, int regYear, int year){
         super(address, eircode, marketValue, locationCategory, ppr, regYear);
-        this.tax = getPropertyTax(year);
+        this.tax = getPropertyTax(address, eircode, marketValue, locationCategory, ppr, regYear, year);
         this.paid = false;
         this.year = year;
         this.regYear = regYear;
+        this.address = address;
+        this.eircode = eircode;
+        this.marketValue = marketValue;
+        this.locationCategory = locationCategory;
+        this.ppr = ppr;
     }
-    public double getPropertyTax(int year){
+    public double getPropertyTax(String address, String eircode, double marketValue, String locationCategory, boolean ppr, int regYear, int year){
         double tax = 100;
         double value = super.getMarketValue();
-        if (value > upperBand) {
-            tax = tax + (value*upperBandPerc);
-        } else if (value > middleBand) {
-            tax = tax + (value*middleBandPerc);
-        } else if (value > lowerBand) {
-            tax = tax + (value*lowerBandPerc);
+        if (value > this.upperBand) {
+            tax = tax + (value*this.upperBandPerc);
+        } else if (value > this.middleBand) {
+            tax = tax + (value*this.middleBandPerc);
+        } else if (value > this.lowerBand) {
+            tax = tax + (value*this.lowerBandPerc);
         }
+        tax = tax + getLocationTax(tax, locationCategory);
+        tax = tax + isPrivateResidence(tax, ppr, this.pprVal);
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
         for(int i = year; i < currentYear; i++){
             tax = tax*penalty;
         }
-        tax = tax + getLocationTax();
-        tax = tax + isPrivateResidence();
         return tax;
     }
-    public double getLocationTax(){
-        switch (super.getLocationCategory()) {
-            case "City":
-                tax = tax + City;
-                break;
-            case "Large town":
-                tax = tax + LargeT;
-                break;
-            case "Small town":
-                tax = tax + SmallT;
-                break;
-            case "Village":
-                tax = tax + Village;
-                break;
-            case "Countryside":
-                tax = tax + Countryside;
-                break;
+    public double getLocationTax(double tax, String locationCategory) {
+        if (locationCategory.equals("City")){
+            tax = tax + City;
+        } else if (locationCategory.equals("Large town")){
+            tax = tax + LargeT;
+        } else if (locationCategory.equals("Small town")){
+            tax = tax + SmallT;
+        } else if (locationCategory.equals("Village")){
+            tax = tax + Village;
+        } else if (locationCategory.equals("Countryside")) {
+            tax = tax + Countryside;
         }
         return tax;
     }
-    public double isPrivateResidence(){
-        if (!super.getPpr()){
+    public double isPrivateResidence(double tax, boolean ppr, double pprVal){
+        if (!ppr){
             tax = tax + pprVal;
         }
         return tax;
@@ -195,5 +200,65 @@ public class PropertyTax extends Property{
 
     public void setPprVal(double pprVal) {
         this.pprVal = pprVal;
+    }
+    @Override
+    public String getAddress() {
+        return address;
+    }
+
+    @Override
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    @Override
+    public String getEircode() {
+        return eircode;
+    }
+
+    @Override
+    public void setEircode(String eircode) {
+        this.eircode = eircode;
+    }
+
+    @Override
+    public double getMarketValue() {
+        return marketValue;
+    }
+
+    @Override
+    public void setMarketValue(double marketValue) {
+        this.marketValue = marketValue;
+    }
+
+    @Override
+    public String getLocationCategory() {
+        return locationCategory;
+    }
+
+    @Override
+    public void setLocationCategory(String locationCategory) {
+        this.locationCategory = locationCategory;
+    }
+    @Override
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public int getRegYear() {
+        return regYear;
+    }
+
+    public void setRegYear(int regYear) {
+        this.regYear = regYear;
+    }
+
+    public boolean isPpr() {
+        return ppr;
+    }
+
+    @Override
+    public void setPpr(boolean ppr) {
+        this.ppr = ppr;
     }
 }
